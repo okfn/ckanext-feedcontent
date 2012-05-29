@@ -1,4 +1,3 @@
-
 import ckan.logic as logic
 import ckan.lib.navl.dictization_functions as df
 import ckan.lib.base as base
@@ -6,15 +5,17 @@ import ckan.model as model
 import ckan.lib.munge as m
 import ckan.logic.action as action
 
-from ckanext.feedcontent.schema import feed_schema
-from ckanext.feedcontent.model import Feed
+import ckanext.feedcontent.schema as fs
+import ckanext.feedcontent.model as feedmodels
+import ckanext.feedcontent.util as util
 
 def _generate_name(title):
     name = m.munge_title_to_name(title).replace('_', '-')
     while '--' in name:
         name = name.replace('--', '-')
     like_q = u"%s%%" % name
-    query = model.Session.query(Feed).filter(Feed.name.ilike(like_q)).limit(100)
+    query = model.Session.query(feedmodels.Feed).\
+                filter(feedmodels.Feed.name.ilike(like_q)).limit(100)
     taken = [do.name for do in query]
     if name not in taken:
         return name
@@ -25,42 +26,61 @@ def _generate_name(title):
                 return name+str(counter)
             counter+=1
 
-def get_feed(id):
-    return model.Session.query(Feed).filter(Feed.name==id).first()
+def get_feed(name):
+    return model.Session.query(feedmodels.Feed).\
+                filter(feedmodels.Feed.name==name).first()
 
 def get_feeds():
     """ Fetches all of the current Feeds """
-    return model.Session.query(Feed).order_by(Feed.updated.desc()).all()
+    return model.Session.query(feedmodels.Feed).\
+                order_by(feedmodels.Feed.updated.desc()).all()
 
 
 def create_feed(data_dict):
-    data, errors = df.validate(data_dict, feed_schema())
+    data, errors = df.validate(data_dict, fs.feed_schema())
     if errors:
         raise logic.ValidationError(errors, action.error_summary(errors))
 
-    feed = Feed(
+    ok,format,content = util.validate_feed(data.get('url'))
+    if not ok:
+        pass
+
+    feed = feedmodels.Feed(
             name=_generate_name(data.get('title')),
             title=data.get('title'),
             url=data.get('url'),
-            format=data.get('format'),
+            format=format,
             updated=data.get('updated'),
-            content=data.get('content')
+            content=content
         )
     feed.save()
 
     return feed
 
+def update_feed(feed):
+    feed.content = util.fetch_feed_content(feed.url)
+    feed.save()
+
 
 def edit_feed(feed, data_dict):
-    data, errors = df.validate(data_dict, feed_schema())
+    data, errors = df.validate(data_dict, fs.feed_schema())
     if errors:
         raise logic.ValidationError(errors, error_summary(errors))
 
+    ok,format, content = util.validate_feed(data.get('url'))
+    if not ok:
+        pass
+
+    # If URL is different use new content, but if using existing
+    # content replace it if still empty
+    if feed.url != data.get('url'):
+        feed.content = content
+    else:
+        feed.content = data.get('content', None) or content
     feed.title=data.get('title')
     feed.url=data.get('url')
-    feed.format=data.get('format')
+    feed.format=format
     feed.updated=data.get('updated')
-    feed.content=data.get('content')
     feed.save()
 
     return feed

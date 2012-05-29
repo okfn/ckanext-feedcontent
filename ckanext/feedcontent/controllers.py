@@ -8,11 +8,12 @@ import ckan.lib.base as base
 import ckan.logic as logic
 import ckan.model as model
 import ckanext.feedcontent.logic as feedlogic
+import ckanext.feedcontent.util as util
 c = base.c
 
 class FeedController(base.BaseController):
 
-    controller_path = 'ckanext.feedcontent.controllers.FeedController'
+    controller_path = 'ckanext.feedcontent.controllers:FeedController'
 
     def index(self):
         self._check_auth("feed_list")
@@ -53,18 +54,52 @@ class FeedController(base.BaseController):
                 error_summary = e.error_summary
 
         vars = {'data': data, 'errors': errors, 'error_summary': error_summary}
+        c.action = 'create'
         c.form = base.render("feeds/edit_form.html", extra_vars=vars)
         return base.render("feeds/new.html")
 
-    def edit(self):
+    def update(self, id):
+        self._check_auth("feed_update")
+
+        feed = feedlogic.get_feed(id)
+        if not feed:
+            base.abort(404, _("Feed {name} does not exist".format(name=id)))
+
+        feedlogic.update_feed(feed)
+        h.redirect_to( controller=self.controller_path,
+                       action='read',
+                       id=feed.name)
+
+
+    def edit(self, id):
         self._check_auth("feed_update")
 
         data, errors, error_summary = {}, {}, {}
+        c.feed = feedlogic.get_feed(id)
+        if not c.feed:
+            base.abort(404, _("Feed {name} does not exist".format(name=id)))
 
         if base.request.method == "POST":
-            pass
+            try:
+                data = logic.clean_dict(
+                        df.unflatten(
+                            logic.tuplize_dict(
+                                logic.parse_params(base.request.params)
+                        )))
+                feed = feedlogic.edit_feed(c.feed, data)
+                h.redirect_to( controller=self.controller_path,
+                               action='read',
+                               id=feed.name)
+            except df.DataError:
+                base.abort(400, _(u'Integrity Error'))
+            except logic.ValidationError, e:
+                errors = e.error_dict
+                error_summary = e.error_summary
+        else:
+            data = c.feed.as_dict()
 
         vars = {'data': data, 'errors': errors, 'error_summary': error_summary}
+        c.action = 'edit'
         c.form = base.render("feeds/edit_form.html", extra_vars=vars)
         return base.render("feeds/edit.html")
 

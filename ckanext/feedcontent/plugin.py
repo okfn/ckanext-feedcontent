@@ -25,6 +25,7 @@ class FeedContent(p.SingletonPlugin):
         map.connect('feed_new', '/feed/new', controller=ctllr, action='new')
         map.connect('feed_edit', '/feed/edit/{id}', controller=ctllr, action='edit')
         map.connect('feed_delete', '/feed/delete', controller=ctllr, action='delete')
+        map.connect('feed_update', '/feed/{id}/update', controller=ctllr, action='update')
         map.connect('feed_view', '/feed/{id}', controller=ctllr, action='read')
         return map
 

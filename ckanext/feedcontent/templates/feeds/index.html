@@ -16,20 +16,18 @@
   </py:def>
 
  <py:match path="primarysidebar">
-    <li class="widget-container widget_text">
-      <ul class="property-list">
-        <li>
-            <h3>Feeds</h3>
-        </li>
-      </ul>
-    </li>
+    <h3>Feeds</h3>
+    <p>
+        This tool allows users to create feeds from where they can integrate them
+        into the home page of the site. Once a feed is configured it will be fetched
+        and be made available on templates by matching titles to feed entries.
+    </p>
   </py:match>
 
   <div py:match="content">
 
-    <div class="group-dataset-list">
-        <h3>Feeds</h3>
-        <table width="100%" border="0">
+    <div class="feed-list">
+        <table width="100%" border="0" cellpadding="2" cellspacing="4">
             <tr>
                 <th>Name</th>
                 <th>URL</th>
@@ -40,8 +38,8 @@
             <tr>
                 <td><a href="${h.url_for(controller='ckanext.feedcontent.controllers:FeedController',action='read',id=feed.name)}">${feed.title}</a></td>
                 <td>${feed.url}</td>
-                <td>${feed.created}</td>
-                <td>${feed.updated}</td>
+                <td>${h.render_datetime(feed.created, with_hours=True)}</td>
+                <td>${h.render_datetime(feed.updated, with_hours=True)}</td>
             </tr>
             </py:for>
         </table>

@@ -6,20 +6,21 @@
   <py:def function="page_title">${c.feed.title}</py:def>
   <py:def function="page_heading">${c.feed.title}</py:def>
 
-  <py:match path="primarysidebar">
-    <li class="widget-container widget_text">
-      <ul class="property-list">
-        <li>
-            <h3>Feeds</h3>
-        </li>
-      </ul>
-    </li>
-  </py:match>
-
-
   <py:match path="content">
-    <h3>Feed: ${c.feed.title}</h3>
+    <h2>${c.feed.title}</h2>
 
+    <h4>${c.feed.url} &nbsp;&nbsp;<small><a href="${h.url_for(controller='ckanext.feedcontent.controllers:FeedController', action='update', id=c.feed.name)}">Update feed</a></small></h4>
+
+    <div>
+        <p><strong>Format</strong>: ${c.feed.format}</p>
+        <p><strong>Created</strong>: ${h.render_datetime(c.feed.created, with_hours=True)}</p>
+        <p><strong>Last updated</strong>: ${h.render_datetime(c.feed.updated, with_hours=True)}</p>
+    </div>
+    <div>
+        <p>
+          ${c.feed.content}
+        </p>
+    </div>
     <!--
     <div class="notes" py:if="str(c.description_formatted).strip()">
       <div id="notes-extract">
