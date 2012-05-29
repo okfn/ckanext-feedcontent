@@ -3,6 +3,8 @@ import ckan.plugins as p
 import ckan.lib.helpers as h
 import auth
 
+from ckanext.feedcontent.model import setup
+
 log = logging.getLogger(__name__)
 
 
@@ -19,11 +21,11 @@ class FeedContent(p.SingletonPlugin):
 
     def before_map(self, map):
         ctllr = 'ckanext.feedcontent.controllers:FeedController'
-        map.connect('feed_index', '/feeds', controller=ctllr, action='index')
-        map.connect('feed_new', '/feeds/new', controller=ctllr, action='new')
-        map.connect('feed_edit', '/feeds/edit/{id}', controller=ctllr, action='edit')
-        map.connect('feed_delete', '/feeds/delete', controller=ctllr, action='delete')
-        map.connect('feed_view', '/feeds/{id}', action='read')
+        map.connect('feed_index', '/feed', controller=ctllr, action='index')
+        map.connect('feed_new', '/feed/new', controller=ctllr, action='new')
+        map.connect('feed_edit', '/feed/edit/{id}', controller=ctllr, action='edit')
+        map.connect('feed_delete', '/feed/delete', controller=ctllr, action='delete')
+        map.connect('feed_view', '/feed/{id}', controller=ctllr, action='read')
         return map
 
 
@@ -32,7 +34,7 @@ class FeedContent(p.SingletonPlugin):
         Called upon CKAN setup, will pass current configuration dict
         to the plugin to read custom options.
         """
-        pass
+        setup()
 
     def update_config(self, config):
         p.toolkit.add_template_directory(config, 'templates')
@@ -43,6 +45,7 @@ class FeedContent(p.SingletonPlugin):
             'feed_update' : auth.feed_update,
             'feed_delete' : auth.feed_delete,
             'feed_list'   : auth.feed_list,
+            'feed_get'    : auth.feed_get
         }
 
 

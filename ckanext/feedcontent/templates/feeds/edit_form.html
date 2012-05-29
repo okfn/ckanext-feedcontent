@@ -1,3 +1,41 @@
+<form
+  class="form-horizontal ${'has-errors' if errors else ''}"
+  id="feed-edit"
+  action=""
+  method="post"
+  xmlns:i18n="http://genshi.edgewall.org/i18n"
+  xmlns:py="http://genshi.edgewall.org/"
+  xmlns:xi="http://www.w3.org/2001/XInclude">
 
+<div class="error-explanation" py:if="error_summary">
+<h2>Errors in form</h2>
+<p>The form contains invalid entries:</p>
+<ul>
+  <li py:for="key, error in error_summary.items()">${"%s: %s" % (key if not key=='Name' else 'URL', error)}</li>
+</ul>
+</div>
 
-<h1>Edit Form!</h1>
+<fieldset id="basic-information">
+  <div class="control-group">
+    <label for="title" class="control-label">Title</label>
+    <div class="controls">
+      <input class="js-title" id="title" name="title" type="text" value="${data.get('title', '')}"/>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <label for="url" class="control-label">Feed URL:</label>
+    <div class="controls">
+      <input id="url" name="url" type="url" value="${data.get('url', '')}"/>
+      <p>The URL for the image that is associated with this group.</p>
+    </div>
+  </div>
+</fieldset>
+
+<div class="form-actions">
+  <input id="save" class="btn btn-primary" name="save" type="submit" value="${_('Save Changes')}" />
+  <py:if test="c.feed">
+    <input id="cancel" class="btn href-action" name="cancel" type="reset" value="${_('Cancel')}" action="${h.url_for(controller='ckanext.feedcontent.controllers:FeedController', action='read', id=c.feed.name)}" />
+  </py:if>
+</div>
+</form>

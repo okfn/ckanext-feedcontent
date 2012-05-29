@@ -9,6 +9,10 @@
   <py:match path="minornavigation">
     <ul class="nav nav-pills" py:choose="bool(c.feed)">
       <py:when test="True" py:with="can_update=h.check_access('feed_update',{'id':c.feed.id})">
+        <li class="${'active' if c.action=='index' else ''}">
+          ${h.subnav_link(h.icon('feed') + _('List Feeds'), controller='ckanext.feedcontent.controllers:FeedController', action='index' )}
+        </li>
+
         <li class="${'active' if c.action=='read' else ''}">${h.subnav_link(h.icon('feed') + _('View'), controller='ckanext.feedcontent.controllers:FeedController', action='read', id=c.feed.name)}</li>
         <li class="divider" py:if="can_update">|</li>
         <li class="${'active' if c.action=='edit' else ''}" py:if="can_update">

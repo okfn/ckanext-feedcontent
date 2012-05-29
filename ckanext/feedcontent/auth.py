@@ -19,6 +19,18 @@ def feed_create(context, data_dict):
 
     return { 'success': True }
 
+
+def feed_get(context, data_dict):
+    """
+    Feed get permissions.  Only sysadmins are allowed to view feeds
+    """
+    user = context.get('user','')
+    if not Authorizer().is_sysadmin(unicode(user)):
+        return {'success': False,
+                'msg': _('You are not allowed to view this feed')}
+    return { 'success': True }
+
+
 def feed_list(context, data_dict):
     """
     Feed list permissions. Only sysadmins can list feed
