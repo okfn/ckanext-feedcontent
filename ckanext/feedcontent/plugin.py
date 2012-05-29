@@ -18,15 +18,12 @@ class FeedContent(p.SingletonPlugin):
     p.implements(p.IRoutes, inherit=True)
 
     def before_map(self, map):
-        print "configuring map"
         ctllr = 'ckanext.feedcontent.controllers:FeedController'
         map.connect('feed_index', '/feeds', controller=ctllr, action='index')
         map.connect('feed_new', '/feeds/new', controller=ctllr, action='new')
         map.connect('feed_edit', '/feeds/edit/{id}', controller=ctllr, action='edit')
         map.connect('feed_delete', '/feeds/delete', controller=ctllr, action='delete')
         map.connect('feed_view', '/feeds/{id}', action='read')
-
-        print h.url_for('feed_new')
         return map
 
 

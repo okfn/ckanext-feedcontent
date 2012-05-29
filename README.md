@@ -18,6 +18,14 @@ able to add the following to your CKAN .ini file::
 
 **At this point nothing will have happened**! To add feeds to your system see the next section.
 
+## Running the tests
+
+You can run the tests from the root of this repository with the following command
+
+```
+nosetests --ckan --with-pylons=test-core.ini ckanext/feedcontent/tests/
+```
+
 ## Using the Extension
 
 ### Adding feeds
