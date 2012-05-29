@@ -1,4 +1,5 @@
-
+import requests
+import feedparser
 
 def validate_feed(url):
     """
@@ -13,16 +14,18 @@ def validate_feed(url):
     if not content:
         return False, None, None
 
-    return True, 'atom', content
+    feed = feedparser.parse(content)
+    if feed.bozo:
+        return False, None, None
+
+    return True, feed.version, content
 
 
 def fetch_feed_content(url):
     """
         Fetches the content from the supplied url
     """
-    import urllib2
-    try:
-        content = urllib2.urlopen(url).read()
-    except:
-        content = ''
-    return content
+    r = requests.get(url)
+    if r.status_code == 200:
+        return r.content
+    return ""

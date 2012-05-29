@@ -58,7 +58,7 @@ def create_feed(data_dict):
     return feed
 
 def update_feed(feed):
-    feed.content = util.fetch_feed_content(feed.url)
+    feed.content = unicode(util.fetch_feed_content(feed.url))
     feed.save()
 
 
