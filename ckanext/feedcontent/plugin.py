@@ -3,7 +3,7 @@ import ckan.plugins as p
 import ckan.lib.helpers as h
 import auth
 
-from ckanext.feedcontent.model import setup
+import ckanext.feedcontent.model as feedmodel
 
 log = logging.getLogger(__name__)
 
@@ -43,20 +43,19 @@ class FeedContent(p.SingletonPlugin):
         Called upon CKAN setup, and creates (or checks) the appropriate
         database tables are created.
         """
-        setup()
+        feedmodel.setup()
 
         # If a default snippet is configured then we should use that
         # otherwise we will use a default.
-        FeedContent.default_snippet = config.get('feeds.default.snippet',
+        FeedContent.default_snippet = config.get('ckan.feeds.default.snippet',
                                                  'snippets/default.html')
 
 
     def update_config(self, config):
         """ Updates the configuration with the template folder """
         p.toolkit.add_template_directory(config, 'templates/main')
+        p.toolkit.add_template_directory(config, 'templates/snippets')
 
-        # TODO: Only add example if we have a config option set to
-        # use it.
 
     def get_auth_functions(self):
         """ Provides new authorisation functions specific to feed
