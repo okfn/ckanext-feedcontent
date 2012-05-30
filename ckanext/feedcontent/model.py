@@ -14,6 +14,8 @@ log = logging.getLogger(__name__)
 
 feed_table = None
 
+class FeedException(Exception):
+    pass
 
 class Feed(domain_object.DomainObject):
     """

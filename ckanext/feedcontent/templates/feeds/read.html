@@ -6,6 +6,13 @@
   <py:def function="page_title">${c.feed.title}</py:def>
   <py:def function="page_heading">${c.feed.title}</py:def>
 
+ <py:match path="primarysidebar">
+    <h3>Feeds</h3>
+    <p>
+        <a class="btn btn-danger" href="${h.url_for(controller='ckanext.feedcontent.controllers:FeedController', action='delete', id=c.feed.name)}" onclick="return confirm('Are you sure you want to delete this feed?');">Delete</a>
+    </p>
+  </py:match>
+
   <py:match path="content">
     <h2>${c.feed.title}</h2>
 
@@ -21,6 +28,7 @@
           ${c.feed.content}
         </p>
     </div>
+
   </py:match>
 
   <xi:include href="layout.html" />

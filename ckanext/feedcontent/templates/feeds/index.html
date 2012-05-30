@@ -33,6 +33,7 @@
                 <th>URL</th>
                 <th>Created</th>
                 <th>Updated</th>
+                <th>&nbsp;</th>
             </tr>
             <py:for each="feed in c.feeds">
             <tr>
@@ -40,6 +41,7 @@
                 <td>${feed.url}</td>
                 <td>${h.render_datetime(feed.created, with_hours=True)}</td>
                 <td>${h.render_datetime(feed.updated, with_hours=True)}</td>
+                <td><a  href="${h.url_for(controller='ckanext.feedcontent.controllers:FeedController',action='update',id=feed.name)}">Update</a></td>
             </tr>
             </py:for>
         </table>

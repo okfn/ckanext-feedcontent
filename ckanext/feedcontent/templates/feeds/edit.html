@@ -6,6 +6,12 @@
   <py:def function="page_heading">Edit: ${c.feed.title}</py:def>
   <py:def function="body_class">${h.literal('no-sidebar')}</py:def>
 
+  <py:match path="primarysidebar">
+    <h3>Feeds</h3>
+    <p>
+    </p>
+  </py:match>
+
   <div py:match="content" class="feed-edit-form">
     ${Markup(c.form)}
   </div>

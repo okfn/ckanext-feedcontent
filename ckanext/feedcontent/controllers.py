@@ -7,6 +7,7 @@ import ckan.lib.helpers as h, json
 import ckan.lib.base as base
 import ckan.logic as logic
 import ckan.model as model
+import ckanext.feedcontent.model as feedmodels
 import ckanext.feedcontent.logic as feedlogic
 import ckanext.feedcontent.util as util
 c = base.c
@@ -47,6 +48,10 @@ class FeedController(base.BaseController):
                 h.redirect_to( controller=self.controller_path,
                                action='read',
                                id=feed.name)
+            except feedmodels.FeedException:
+                error = {'url': [u'Failed to load feed']}
+                error_summary = {u'URL': u'Failed to load feed'}
+                data = dd
             except df.DataError:
                 base.abort(400, _(u'Integrity Error'))
             except logic.ValidationError, e:
@@ -71,6 +76,7 @@ class FeedController(base.BaseController):
                        id=feed.name)
 
 
+
     def edit(self, id):
         self._check_auth("feed_update")
 
@@ -90,6 +96,10 @@ class FeedController(base.BaseController):
                 h.redirect_to( controller=self.controller_path,
                                action='read',
                                id=feed.name)
+            except feedmodels.FeedException:
+                error = {'url': [u'Failed to load feed']}
+                error_summary = {u'URL': u'Failed to load feed'}
+                data = c.feed.as_dict()
             except df.DataError:
                 base.abort(400, _(u'Integrity Error'))
             except logic.ValidationError, e:
@@ -103,10 +113,15 @@ class FeedController(base.BaseController):
         c.form = base.render("feeds/edit_form.html", extra_vars=vars)
         return base.render("feeds/edit.html")
 
-    def delete(self):
-        # get context
+    def delete(self, id):
         self._check_auth("feed_delete")
-        h.redirect_to("feed_admin")
+        feed = feedlogic.get_feed(id)
+        if not feed:
+            base.abort(404, _("Feed {name} does not exist".format(name=id)))
+        feedlogic.delete_feed(feed)
+
+        h.redirect_to( controller=self.controller_path,
+                       action='index')
 
     def _check_auth(self, name):
         ctx = {"user": c.user, 'model':model, 'session': model.Session}

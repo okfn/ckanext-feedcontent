@@ -1,3 +1,5 @@
+from pylons.i18n import _
+
 import ckan.logic as logic
 import ckan.lib.navl.dictization_functions as df
 import ckan.lib.base as base
@@ -27,6 +29,7 @@ def _generate_name(title):
             counter+=1
 
 def get_feed(name):
+    """ Fetches a single feed object by name """
     return model.Session.query(feedmodels.Feed).\
                 filter(feedmodels.Feed.name==name).first()
 
@@ -43,7 +46,7 @@ def create_feed(data_dict):
 
     ok,format,content = util.validate_feed(data.get('url'))
     if not ok:
-        pass
+        raise feedmodels.FeedException(_("Unable to fetch feed"))
 
     feed = feedmodels.Feed(
             name=_generate_name(data.get('title')),
@@ -62,6 +65,10 @@ def update_feed(feed):
     feed.save()
 
 
+def delete_feed(feed):
+    model.Session.delete(feed)
+    model.Session.commit()
+
 def edit_feed(feed, data_dict):
     data, errors = df.validate(data_dict, fs.feed_schema())
     if errors:
@@ -69,7 +76,7 @@ def edit_feed(feed, data_dict):
 
     ok,format, content = util.validate_feed(data.get('url'))
     if not ok:
-        pass
+        raise feedmodels.FeedException(_("Unable to fetch feed"))
 
     # If URL is different use new content, but if using existing
     # content replace it if still empty
