@@ -58,6 +58,7 @@ feed_table = sa.Table('feed', meta.metadata,
     sa.Column('format',  sa.types.UnicodeText,  default=u"atom"),
     sa.Column('created', sa.types.DateTime, default=datetime.now),
     sa.Column('updated', sa.types.DateTime, default=datetime.now, onupdate=datetime.now),
+    sa.Column('template', sa.types.UnicodeText, default=u""),
     sa.Column('content', sa.types.UnicodeText, default=u""),
 )
 

@@ -13,16 +13,24 @@ import ckanext.feedcontent.util as util
 c = base.c
 
 class FeedController(base.BaseController):
+    """
+    Controller handling Feed object creation, editing, deletion and updating
+    """
 
     controller_path = 'ckanext.feedcontent.controllers:FeedController'
 
     def index(self):
+        """
+        Returns a list of feeds ordered by update time (newest first)
+        """
         self._check_auth("feed_list")
-
         c.feeds = feedlogic.get_feeds()
         return base.render("feeds/index.html")
 
     def read(self, id):
+        """
+        Shows an individual feed along with the currently held content.
+        """
         self._check_auth("feed_get")
 
         c.feed = feedlogic.get_feed(id)
@@ -32,6 +40,10 @@ class FeedController(base.BaseController):
         return base.render("feeds/read.html")
 
     def new(self):
+        """
+        Allows the user to create a new feed and performs an initial
+        fetch of the feed during validation.
+        """
         self._check_auth("feed_create")
         data, errors, error_summary = {}, {}, {}
 
@@ -64,6 +76,9 @@ class FeedController(base.BaseController):
         return base.render("feeds/new.html")
 
     def update(self, id):
+        """
+        Fetches the data from the URL specified by the feed
+        """
         self._check_auth("feed_update")
 
         feed = feedlogic.get_feed(id)
@@ -78,6 +93,10 @@ class FeedController(base.BaseController):
 
 
     def edit(self, id):
+        """
+        Allows a user to edit an existing feed, potentially changing the URL
+        and in doing so re-triggering validation of the feed.
+        """
         self._check_auth("feed_update")
 
         data, errors, error_summary = {}, {}, {}
@@ -114,6 +133,9 @@ class FeedController(base.BaseController):
         return base.render("feeds/edit.html")
 
     def delete(self, id):
+        """
+        Deletes the specified feed
+        """
         self._check_auth("feed_delete")
         feed = feedlogic.get_feed(id)
         if not feed:
@@ -124,6 +146,11 @@ class FeedController(base.BaseController):
                        action='index')
 
     def _check_auth(self, name):
+        """
+        Performs an auth check for the specified action. The auth functions
+        are found in auth.py and made available through the plugin
+        implementation of IAuthFuncions
+        """
         ctx = {"user": c.user, 'model':model, 'session': model.Session}
         try:
             logic.check_access(name, ctx)

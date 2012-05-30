@@ -10,8 +10,13 @@ log = logging.getLogger(__name__)
 
 class FeedContent(p.SingletonPlugin):
     """
-    Insert fragments into pages and the home page to
-    allow users to add content from data feeds.
+    This plugin configures a local controller to be used for the management
+    of feeds within the system.
+
+    By creating a new database model to hold this information, and accessing
+    it via the FeedController it is possible to manage the feeds that the
+    extension 'knows' about.  By providing template helpers to pull this data
+    onto a particular template.
     """
     p.implements(p.IAuthFunctions)
     p.implements(p.IConfigurable)
@@ -19,7 +24,10 @@ class FeedContent(p.SingletonPlugin):
     p.implements(p.ITemplateHelpers)
     p.implements(p.IRoutes, inherit=True)
 
+    default_snippet = None
+
     def before_map(self, map):
+        """  Creates the routing for feed URLs to map to the FeedController """
         ctllr = 'ckanext.feedcontent.controllers:FeedController'
         map.connect('feed_index', '/feed', controller=ctllr, action='index')
         map.connect('feed_new', '/feed/new', controller=ctllr, action='new')
@@ -32,15 +40,27 @@ class FeedContent(p.SingletonPlugin):
 
     def configure(self, config):
         """
-        Called upon CKAN setup, will pass current configuration dict
-        to the plugin to read custom options.
+        Called upon CKAN setup, and creates (or checks) the appropriate
+        database tables are created.
         """
         setup()
 
+        # If a default snippet is configured then we should use that
+        # otherwise we will use a default.
+        FeedContent.default_snippet = config.get('feeds.default.snippet',
+                                                 'snippets/default.html')
+
+
     def update_config(self, config):
-        p.toolkit.add_template_directory(config, 'templates')
+        """ Updates the configuration with the template folder """
+        p.toolkit.add_template_directory(config, 'templates/main')
+
+        # TODO: Only add example if we have a config option set to
+        # use it.
 
     def get_auth_functions(self):
+        """ Provides new authorisation functions specific to feed
+        management """
         return {
             'feed_create' : auth.feed_create,
             'feed_update' : auth.feed_update,
@@ -51,10 +71,9 @@ class FeedContent(p.SingletonPlugin):
 
 
     @classmethod
-    def feed_entry(cls):
-        '''  Adds Disqus recent comments to the page. '''
+    def feed_entry(cls, name, title):
         data = {"key": "value"}
-        return p.toolkit.render_snippet('template.html', data)
+        return p.toolkit.render_snippet(default_snippet, data)
 
     def get_helpers(self):
         return {'feed_entry' : self.feed_entry,}

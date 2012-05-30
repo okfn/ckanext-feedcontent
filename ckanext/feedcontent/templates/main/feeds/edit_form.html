@@ -31,6 +31,14 @@
     </div>
   </div>
 
+  <div class="control-group">
+    <label for="url" class="control-label">Template file:</label>
+    <div class="controls">
+      <input id="template" name="template" type="text" value="${data.get('template', '')}"/>
+      <p>Path to a snippet template for the feed to be rendered</p>
+    </div>
+  </div>
+
   <div class="control-group" py:if="not c.action == 'create'">
     <label for="content" class="control-label">Content:</label>
     <div class="controls">

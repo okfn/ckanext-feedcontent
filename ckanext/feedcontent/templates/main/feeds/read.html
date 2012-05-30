@@ -20,6 +20,7 @@
 
     <div>
         <p><strong>Format</strong>: ${c.feed.format}</p>
+        <p><strong>Template</strong>: ${c.feed.template or 'Default'}</p>
         <p><strong>Created</strong>: ${h.render_datetime(c.feed.created, with_hours=True)}</p>
         <p><strong>Last updated</strong>: ${h.render_datetime(c.feed.updated, with_hours=True)}</p>
     </div>

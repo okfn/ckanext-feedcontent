@@ -12,6 +12,11 @@ import ckanext.feedcontent.model as feedmodels
 import ckanext.feedcontent.util as util
 
 def _generate_name(title):
+    """
+    Generates a valid slug for the specified title. It does this by checking
+    the database for an existing match, and if it exsits then it tries again
+    with a number appended.
+    """
     name = m.munge_title_to_name(title).replace('_', '-')
     while '--' in name:
         name = name.replace('--', '-')
@@ -40,6 +45,9 @@ def get_feeds():
 
 
 def create_feed(data_dict):
+    """ Creates a new feed after validating the information provided,
+    and then validates the data held at the specified URL is in fact a
+    feed """
     data, errors = df.validate(data_dict, fs.feed_schema())
     if errors:
         raise logic.ValidationError(errors, action.error_summary(errors))
@@ -54,22 +62,32 @@ def create_feed(data_dict):
             url=data.get('url'),
             format=format,
             updated=data.get('updated'),
-            content=content
+            content=content,
+            template=data.get('template')
         )
     feed.save()
 
     return feed
 
 def update_feed(feed):
+    """
+    Fetches the data for the feed and updates the object in the
+    database.
+    """
     feed.content = unicode(util.fetch_feed_content(feed.url))
     feed.save()
 
 
 def delete_feed(feed):
+    """ Deletes the specified feed """
     model.Session.delete(feed)
     model.Session.commit()
 
 def edit_feed(feed, data_dict):
+    """
+    Edits the specified feed with the dictionary of data provided,
+    validating both the data and the request URL (as with create_feed)
+    """
     data, errors = df.validate(data_dict, fs.feed_schema())
     if errors:
         raise logic.ValidationError(errors, error_summary(errors))
@@ -86,6 +104,7 @@ def edit_feed(feed, data_dict):
         feed.content = data.get('content', None) or content
     feed.title=data.get('title')
     feed.url=data.get('url')
+    feed.template=data.get('template')
     feed.format=format
     feed.updated=data.get('updated')
     feed.save()

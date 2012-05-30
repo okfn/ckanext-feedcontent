@@ -11,6 +11,7 @@ def feed_schema():
             'format': [ignore_missing, unicode],
             'created': [ignore_missing, unicode],
             'updated': [ignore_missing, unicode],
+            'template': [ignore_missing, unicode],
             'content': [ignore_missing, unicode],
         }
 
