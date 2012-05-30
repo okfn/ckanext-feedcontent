@@ -30,14 +30,14 @@ nosetests --ckan --with-pylons=test-core.ini ckanext/feedcontent/tests/
 
 ### Adding feeds
 
+To add feeds to CKAN you should log on as a system administrator and then visit /feed/ from where you will be able to add a new feed or edit an existing one.  When you need to update a feed you should visit /feed/ from where you will be able to view the feed to be updated and then press the update button.
 
-To add feeds to the system...
+### Configuring snippets for presentation
+
+How? 
+Using ckan.feeds.default.snippet 
 
 ### Using feeds
 
 To reference a feed and an entry in a template ...
-
-### Updating navigation
-
-Adding entries to the navigation …
 
