@@ -16,7 +16,7 @@ able to add the following to your CKAN .ini file::
 
  ckan.plugins = feed_content <other-plugins>
 
-**At this point nothing will have happened**! To add feeds to your system see the next section.
+**At this point nothing will have happened**! To add feeds to your system see below.
 
 ## Running the tests
 
@@ -31,6 +31,19 @@ nosetests --ckan --with-pylons=test-core.ini ckanext/feedcontent/tests/
 ### Adding feeds
 
 To add feeds to CKAN you should log on as a system administrator and then visit /feed/ from where you will be able to add a new feed or edit an existing one.  When you need to update a feed you should visit /feed/ from where you will be able to view the feed to be updated and then press the update button.
+
+### Setting up the example
+
+Go to the url of your CKAN instance, and go to /feed/ where you should add a new feed with a title of 'ckan' (without the quotes), a url of 'http://ckan.org/feed' and tick the HTML Entries checkbox.  
+
+Add the following line to your configuration
+
+```
+ckan.feed.demo = yes
+```
+
+Point your browser to the home page of your CKAN instance.  This simple example shows in ckanext/feedcontent/templates/example/home.html how the feed items can be included.
+
 
 ### Configuring snippets for presentation
 
