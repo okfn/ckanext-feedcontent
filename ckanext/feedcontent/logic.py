@@ -57,14 +57,14 @@ def create_feed(data_dict):
         raise feedmodels.FeedException(_("Unable to fetch feed"))
 
     feed = feedmodels.Feed(
-            name=_generate_name(data.get('title')),
-            title=data.get('title'),
-            url=data.get('url'),
-            format=format,
-            updated=data.get('updated'),
-            content=content,
-            template=data.get('template'),
-            html_entries=data.get('html_entries')
+            name = _generate_name(data.get('title')),
+            title = data.get('title'),
+            url = data.get('url'),
+            format = format,
+            updated = data.get('updated'),
+            content = content,
+            template = data.get('template'),
+            html_entries = data.get('html_entries')
         )
     feed.save()
 

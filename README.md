@@ -63,5 +63,12 @@ The only other configuration option is the 'ckan.feeds.short_description.size' s
 
 ### Using feeds
 
-To reference a feed and an entry in a template ...
-"title", "link", "description", "dc.creator", "pubDate"
+To reference a feed and add an entry in a template you should use the feed_entry helper and provide it both the name of the feed (name, not title, is the one shown in the URL as a slug) and a regular expression for the title it should match.
+
+In the following example it fetches (and renders) the entry which ends with 'watch the data'.
+
+```
+${h.feed_entry("ckan", ".*watch the data$")}
+```
+
+As feeds do not auto-update, if you wish to update the feed you should do so using the option on the /feed/ page or the individual view page, for example /feed/ckan (if you had following the example setup steps above).

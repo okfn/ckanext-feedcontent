@@ -43,7 +43,6 @@ class FeedContent(p.SingletonPlugin):
         map.connect('feed_view', '/feed/{id}', controller=ctllr, action='read')
         return map
 
-
     def configure(self, config):
         """
         Called upon CKAN setup, and creates (or checks) the appropriate

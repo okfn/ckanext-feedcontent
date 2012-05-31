@@ -40,12 +40,6 @@ def setup():
             log.debug('Feed table created')
         else:
             log.debug('Feed table already exists')
-            # Check if existing tables need to be updated
-            #inspector = refl.Inspector.from_engine(meta.engine)
-            #columns = inspector.get_columns('feed')
-            #if not 'id' in [column['name'] for column in columns]:
-            #    log.debug('Feed tables need to be updated')
-            #    migrate_v2()
     else:
         log.debug('Feed table creation deferred')
 

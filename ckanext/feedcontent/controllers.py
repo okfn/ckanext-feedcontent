@@ -10,6 +10,7 @@ import ckan.model as model
 import ckanext.feedcontent.model as feedmodels
 import ckanext.feedcontent.logic as feedlogic
 import ckanext.feedcontent.util as util
+
 c = base.c
 
 class FeedController(base.BaseController):
@@ -90,8 +91,6 @@ class FeedController(base.BaseController):
                        action='read',
                        id=feed.name)
 
-
-
     def edit(self, id):
         """
         Allows a user to edit an existing feed, potentially changing the URL
@@ -112,7 +111,7 @@ class FeedController(base.BaseController):
                                 logic.parse_params(base.request.params)
                         )))
                 feed = feedlogic.edit_feed(c.feed, data)
-                h.redirect_to( controller=self.controller_path,
+                h.redirect_to(controller=self.controller_path,
                                action='read',
                                id=feed.name)
             except feedmodels.FeedException:
