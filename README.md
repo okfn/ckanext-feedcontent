@@ -34,7 +34,7 @@ To add feeds to CKAN you should log on as a system administrator and then visit 
 
 ### Setting up the example
 
-Go to the url of your CKAN instance, and go to /feed/ where you should add a new feed with a title of 'ckan' (without the quotes), a url of 'http://ckan.org/feed' and tick the HTML Entries checkbox.  
+Go to the url of your CKAN instance, and go to /feed/ where you should add a new feed with a title of 'ckan' (without the quotes), a url of 'http://ckan.org/feed' and tick the HTML Entries checkbox.
 
 Add the following line to your configuration
 
@@ -44,6 +44,18 @@ ckan.feed.demo = yes
 
 Point your browser to the home page of your CKAN instance.  This simple example shows in ckanext/feedcontent/templates/example/home.html how the feed items can be included.
 
+
+### Using feeds
+
+To reference a feed and add an entry in a template you should use the feed_entry helper and provide it both the name of the feed (name, not title, is the one shown in the URL as a slug) and a regular expression for the title it should match.
+
+In the following example it fetches (and renders) the entry which ends with 'watch the data'.
+
+```
+${h.feed_entry("ckan", ".*watch the data$")}
+```
+
+As feeds do not auto-update, if you wish to update the feed you should do so using the option on the /feed/ page or the individual view page, for example /feed/ckan (if you had following the example setup steps above).
 
 ### Configuring snippets for presentation
 
@@ -61,14 +73,3 @@ ckan.feed.default.snippet = feeditem.html
 The only other configuration option is the 'ckan.feeds.short_description.size' setting which will allow the user to set the size of a new short_description field that is passed through to the template.  By default this is 200 characters.
 
 
-### Using feeds
-
-To reference a feed and add an entry in a template you should use the feed_entry helper and provide it both the name of the feed (name, not title, is the one shown in the URL as a slug) and a regular expression for the title it should match.
-
-In the following example it fetches (and renders) the entry which ends with 'watch the data'.
-
-```
-${h.feed_entry("ckan", ".*watch the data$")}
-```
-
-As feeds do not auto-update, if you wish to update the feed you should do so using the option on the /feed/ page or the individual view page, for example /feed/ckan (if you had following the example setup steps above).
