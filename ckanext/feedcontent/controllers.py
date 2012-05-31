@@ -56,7 +56,6 @@ class FeedController(base.BaseController):
                                     )
                                 )
                             )
-                print dd
                 feed = feedlogic.create_feed(dd)
                 h.redirect_to( controller=self.controller_path,
                                action='read',
