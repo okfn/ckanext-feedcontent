@@ -34,7 +34,7 @@ To add feeds to CKAN you should log on as a system administrator and then visit 
 
 ### Configuring snippets for presentation
 
-When using feed entries within a template, it is necessary to specify how the entry will be rendered.  By default this uses a simple template within ckanext\feedcontent\templates but the default can be overridden by setting the 'ckan.feeds.default.snippet' setting to point to a template within the configured template paths.  
+When using feed entries within a template, it is necessary to specify how the entry will be rendered.  By default this uses a simple template within ckanext\feedcontent\templates but the default can be overridden by setting the 'ckan.feeds.default.snippet' setting to point to a template within the configured template paths.
 
 As feeds are created they can also have the template file specified as long as the template can be found in the template path.
 
@@ -45,7 +45,10 @@ extra_template_paths = /var/ckan/extras
 ckan.feed.default.snippet = feeditem.html
 ```
 
+The only other configuration option is the 'ckan.feeds.short_description.size' setting which will allow the user to set the size of a new short_description field that is passed through to the template.  By default this is 200 characters.
+
+
 ### Using feeds
 
 To reference a feed and an entry in a template ...
-
+"title", "link", "description", "dc.creator", "pubDate"

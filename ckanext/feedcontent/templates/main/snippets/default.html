@@ -2,5 +2,23 @@
   xmlns:xi="http://www.w3.org/2001/XInclude"
   py:strip="">
 
+  <div style="clear:both;"/>
+  <div py:if="error" style="color: #f00; padding:2px;">
+      Errors: ${error}
+  </div>
+
+  <div py:if="entry">
+      <h3><a href="${entry['link']}">${entry.get('title')}</a></h3>
+      <span style="font-size:smaller">${entry['author']}</span><br/>
+
+      <span py:if="html_entries">
+          ${Markup(entry['description'])}
+      </span>
+      <span py:if="not html_entries">
+          ${entry['description']}
+      </span>
+      <hr/>
+  </div>
+
 </html>
 

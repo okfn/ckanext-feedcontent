@@ -63,7 +63,8 @@ def create_feed(data_dict):
             format=format,
             updated=data.get('updated'),
             content=content,
-            template=data.get('template')
+            template=data.get('template'),
+            html_entries=data.get('html_entries')
         )
     feed.save()
 
@@ -102,11 +103,13 @@ def edit_feed(feed, data_dict):
         feed.content = content
     else:
         feed.content = data.get('content', None) or content
-    feed.title=data.get('title')
-    feed.url=data.get('url')
-    feed.template=data.get('template')
-    feed.format=format
-    feed.updated=data.get('updated')
+
+    feed.title = data.get('title')
+    feed.url = data.get('url')
+    feed.template = data.get('template')
+    feed.format = format
+    feed.updated = data.get('updated')
+    feed.html_entries = data.get('html_entries')
     feed.save()
 
     return feed

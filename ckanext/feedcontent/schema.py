@@ -13,5 +13,6 @@ def feed_schema():
             'updated': [ignore_missing, unicode],
             'template': [ignore_missing, unicode],
             'content': [ignore_missing, unicode],
+            'html_entries': [ignore_missing, bool]
         }
 

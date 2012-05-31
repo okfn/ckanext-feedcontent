@@ -1,0 +1,31 @@
+<html xmlns:py="http://genshi.edgewall.org/"
+  xmlns:i18n="http://genshi.edgewall.org/i18n"
+  xmlns:xi="http://www.w3.org/2001/XInclude"
+  py:strip="">
+
+  <py:def function="page_title">ckanext-feedcontent example</py:def>
+  <py:def function="body_class">hide-sidebar</py:def>
+
+    <div py:match="//div[@id='content']" id="content-top">
+      <div class="span-24 last">
+        <h1 class="title">
+            ckanext-feedcontent example
+        </h1>
+      </div>
+      <div class="span-6">
+            ${h.feed_entry("ckan", ".*Recline.*")}
+      </div>
+      <div class="span-6">
+            ${h.feed_entry("ckan", ".*watch the data$")}
+      </div>
+
+      <div id="content-bottom" class="region region-content_bottom">
+        <div class="content">
+        </div>
+      </div>
+    </div>
+
+  <xi:include href="layout.html" />
+</html>
+
+

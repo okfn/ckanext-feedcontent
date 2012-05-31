@@ -39,6 +39,15 @@
     </div>
   </div>
 
+  <div class="control-group">
+    <label for="html_entries" class="control-label">HTML Entries?</label>
+    <div class="controls">
+      <input id="html_entries" name="html_entries" type="checkbox" py:attrs="{'checked': 'checked' if data.get('html_entries') else None}"
+        />
+      <p>Should be set to specify whether the content is escaped HTML or not.</p>
+    </div>
+  </div>
+
   <div class="control-group" py:if="not c.action == 'create'">
     <label for="content" class="control-label">Content:</label>
     <div class="controls">

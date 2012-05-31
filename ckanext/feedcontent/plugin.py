@@ -1,12 +1,17 @@
 import logging
 import ckan.plugins as p
 import ckan.lib.helpers as h
-import auth
 
+import pylons.i18n as i18n
+
+import ckanext.feedcontent.auth as auth
 import ckanext.feedcontent.model as feedmodel
+import ckanext.feedcontent.logic as feedlogic
+import ckanext.feedcontent.util as util
 
 log = logging.getLogger(__name__)
 
+_ = i18n._
 
 class FeedContent(p.SingletonPlugin):
     """
@@ -25,6 +30,7 @@ class FeedContent(p.SingletonPlugin):
     p.implements(p.IRoutes, inherit=True)
 
     default_snippet = None
+    short_description_size = 200
 
     def before_map(self, map):
         """  Creates the routing for feed URLs to map to the FeedController """
@@ -49,13 +55,14 @@ class FeedContent(p.SingletonPlugin):
         # otherwise we will use a default.
         FeedContent.default_snippet = config.get('ckan.feeds.default.snippet',
                                                  'snippets/default.html')
-
+        FeedContent.short_description_size = \
+                        config.get('ckan.feeds.short_description.size', 200)
 
     def update_config(self, config):
         """ Updates the configuration with the template folder """
         p.toolkit.add_template_directory(config, 'templates/main')
-        p.toolkit.add_template_directory(config, 'templates/snippets')
-
+        if config.get('ckan.feed.demo', False):
+            p.toolkit.add_template_directory(config, 'templates/example')
 
     def get_auth_functions(self):
         """ Provides new authorisation functions specific to feed
@@ -68,11 +75,34 @@ class FeedContent(p.SingletonPlugin):
             'feed_get'    : auth.feed_get
         }
 
-
     @classmethod
     def feed_entry(cls, name, title):
-        data = {"key": "value"}
-        return p.toolkit.render_snippet(default_snippet, data)
+        """
+        Template helper which when given the name of a feed and the title
+        for a particular entry will render the entry into the snippet for
+        that feed. If the feed has no snippet it will use the one from
+        the config file, and failing that will use default default.
+
+        The title supplied be a regular expression.  Note that because a
+        regex check is done then 'This is a long title here' will match
+        a title parameter of 'This is a long title' unless ^ and & are
+        used to bind the title to start/end of line.
+        """
+        data = {'error':'', 'entry': '', 'html_entries': False}
+        feed = feedlogic.get_feed(name)
+        template = FeedContent.default_snippet
+        if feed:
+            data['html_entries'] = feed.html_entries
+            template = feed.template or FeedContent.default_snippet
+            try:
+                data['entry'] = util.find_entry(feed.content,
+                                                title,
+                                                FeedContent.short_description_size)
+            except feedmodel.FeedException as fe:
+                data['error'] = str(fe)
+        else:
+            data['error'] = _("Feed {name} not found".format(name=name))
+        return p.toolkit.render_snippet(template, data)
 
     def get_helpers(self):
-        return {'feed_entry' : self.feed_entry,}
+        return {'feed_entry' : FeedContent.feed_entry}
